@@ -1,0 +1,42 @@
+syntax = "proto3";
+package proto;
+
+message StyleIdeaInfo {
+    string styleId = 1;
+    repeated int64 streetStylingObjectId = 2; // ordered list lower rank will come first
+}
+
+message StylingIdea {
+    repeated StyleIdeaInfo stylingIdeas = 1;
+
+}
+message StylingIdeaResponse {
+    repeated string styleId = 1;
+}
+
+message ShoppableItem {
+    int64 id = 1;
+    string title = 2;
+    repeated string crossSellStyleIds = 3; // ordered list lower rank comes first
+}
+message StreetStyleObject {
+    int64 id = 1;
+    string imageUrl = 2;
+    string credit = 3;
+    repeated ShoppableItem shoppableItems = 4; // ordered list lower rank comes first
+}
+
+message StreetStyles {
+    repeated StreetStyleObject streetStyles = 1;
+}
+
+message StreetStylesResponse {
+    repeated int64 streetStyleIds = 1;
+}
+service stream {
+    rpc SetStylingIdeas (stream StylingIdea) returns (StylingIdeaResponse) {
+    }
+    rpc SetStreetStylingIdeas (stream StreetStyles) returns (StreetStylesResponse) {
+    }
+}
+
