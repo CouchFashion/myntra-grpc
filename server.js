@@ -23,7 +23,6 @@ function SetStylingIdeas(call, callback) {
     }
   })
   call.on('end',() => {
-    console.log('request',stylingIdeas)
     if(stylingIdeas[0].styleId !== "7694535")
       callback(null, {styleId: ["7694535"]})
     else
@@ -39,9 +38,8 @@ function SetStreetStylingIdeas(call, callback) {
     }
   })
   call.on('end',() => {
-    console.log('request',streetStyles)
-    if(streetStyles[0].id !== "7")
-      callback(null, {streetStyleIds: ["7"]})
+    if(streetStyles[0].id !== "ss7")
+      callback(null, {streetStyleIds: ["ss7"]})
     else
       callback(null, {streetStyleIds: []})
   })

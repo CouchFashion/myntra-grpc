@@ -3,7 +3,7 @@ package proto;
 
 message StyleIdeaInfo {
     string styleId = 1;
-    repeated int64 streetStylingObjectId = 2; // ordered list lower rank will come first
+    repeated string streetStylingObjectId = 2; // ordered list lower rank will come first
 }
 
 message StylingIdea {
@@ -15,15 +15,15 @@ message StylingIdeaResponse {
 }
 
 message ShoppableItem {
-    int64 id = 1;
-    string title = 2;
-    repeated string crossSellStyleIds = 3; // ordered list lower rank comes first
+    string title = 1;
+    repeated string crossSellStyleIds = 2; // ordered list lower rank comes first
 }
+
 message StreetStyleObject {
-    int64 id = 1;
+    string id = 1;
     string imageUrl = 2;
     string credit = 3;
-    repeated ShoppableItem shoppableItems = 4; // ordered list lower rank comes first
+    repeated ShoppableItem shoppableItems = 4;
 }
 
 message StreetStyles {
@@ -31,8 +31,9 @@ message StreetStyles {
 }
 
 message StreetStylesResponse {
-    repeated int64 streetStyleIds = 1;
+    repeated string streetStyleIds = 1;
 }
+
 service stream {
     rpc SetStylingIdeas (stream StylingIdea) returns (StylingIdeaResponse) {
     }

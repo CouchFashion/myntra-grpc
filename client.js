@@ -16,7 +16,7 @@ const hello_proto = grpc.loadPackageDefinition(
   ).proto;
 
 const client = new hello_proto.stream(
-  'localhost:50051',
+  '0.0.0.0:50051',
   grpc.credentials.createInsecure()
 );
 function SetStylingIdeas(client, styleIds){
@@ -33,7 +33,7 @@ function SetStylingIdeas(client, styleIds){
     call.write({
       stylingIdeas: [{
         styleId: id, 
-        streetStylingObjectId: recommendations[id].map(id => Number(id))
+        streetStylingObjectId: recommendations[id]
       }]
     })
   }
@@ -57,8 +57,7 @@ function SetStreetStylingIdeas(client, streetStyleIds) {
   call.end();
 }
 
-// main();
 
-// SetStylingIdeas(client,Object.keys(recommendations))
+SetStylingIdeas(client,Object.keys(recommendations))
 
 SetStreetStylingIdeas(client, Object.keys(streetStyles))
