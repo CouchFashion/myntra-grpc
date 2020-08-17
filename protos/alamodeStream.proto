@@ -1,0 +1,57 @@
+syntax = "proto3";
+package proto;
+
+message StyleIdeaInfo {
+    string styleId = 1;
+    repeated string streetStylingObjectId = 2; // ordered list lower rank will come first
+}
+
+message StylingIdea {
+    repeated StyleIdeaInfo stylingIdeas = 1;
+
+}
+message StylingIdeaResponse {
+    int32 statusCode = 1;
+    string statusDetail = 2;
+    int64 savedStylesCount = 3; // number of styles got added/updated successfully
+}
+
+message ShoppableItem {
+    string title = 1;
+    repeated string crossSellStyleIds = 2; // ordered list lower rank comes first
+}
+
+message StreetStyleObject {
+    string id = 1;
+    string imageUrl = 2;
+    string credit = 3;
+    repeated ShoppableItem shoppableItems = 4;
+}
+
+message StreetStyles {
+    repeated StreetStyleObject streetStyles = 1;
+}
+
+message StreetStylesResponse {
+    int32 statusCode = 1;
+    string statusDetail = 2;
+    int64 savedStreetStyleIds = 3; // number of street styles got added/updated successfully
+}
+
+service alamodeStream {
+    rpc SetStylingIdeas (stream StylingIdea) returns (StylingIdeaResponse) {
+    }
+    rpc SetStreetStylingIdeas (stream StreetStyles) returns (StreetStylesResponse) {
+    }
+}
+
+
+/*
+* Here is the command to generate the protobuf
+* protoc --go_out=plugins=grpc:. alamodeStream.proto
+* protoc --gofast_out=plugins=grpc:. alamodeStream.proto
+* protoc --gogoopsee_out=plugins=grpc+graphql,Mgoogle/protobuf/descriptor.proto=github.com/gogo/protobuf/protoc-gen-gogo/descriptor:. --proto_path=/gopath/src:. *alamodeStream.proto
+* The generated protobuf should be checked-in to
+* all growth, gateway, and layout-engine Repos.
+* to generate python grpc client $ python -m grpc_tools.protoc -I./protos --python_out=. --grpc_python_out=. ./protos/alamodeStream.proto
+*/
