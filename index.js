@@ -1,6 +1,6 @@
 const recommendations = require('./data/recommendations.json');
 const streetStyleObjects = require('./data/streetStyles.json');
-const {SetStylingIdeas, SetStreetStylingIdeas} = require("./GRPC/");  //Resolutions => OK | FAILED
+const {SetStylingIdeas, SetStreetStylingIdeas, Login, GetStylingIdeas} = require("./GRPC/client/");  //Resolutions => OK | FAILED
 
 (async () => {
   let productsIds = Object.keys(recommendations);
@@ -40,5 +40,14 @@ const {GRPC_SOURCE} = require("./constants/index.js");
     <p> Hi this is a test Message</p>
   `);
   console.log(res)
-})();
+});
 // Varun Bansal 8010322322
+
+(async () => {
+  let res = await Login("myntra-tech","WTJZcWJYbHVkSEpoWDNOMGVXeGxhVzV6Y0dseVlYUnBiMjQ9");
+  console.log(res)
+  setTimeout(async () => {
+    let res1 = await GetStylingIdeas(res.jwtToken);
+    console.log(res1)
+  },2000)
+})();

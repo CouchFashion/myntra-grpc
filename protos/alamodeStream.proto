@@ -1,47 +1,53 @@
 syntax = "proto3";
 package proto;
 
+message StylingIdea {
+    int32 statusCode = 1;
+    string statusDetail = 2;
+    repeated StyleIdeaInfo stylingIdeas = 3;
+    int32 stylingIdeasCount = 4;    //no of styling ideas to expect
+}
 message StyleIdeaInfo {
     string styleId = 1;
     repeated string streetStylingObjectId = 2; // ordered list lower rank will come first
 }
-
-message StylingIdea {
-    repeated StyleIdeaInfo stylingIdeas = 1;
-
-}
-message StylingIdeaResponse {
+message StreetStyles {
     int32 statusCode = 1;
     string statusDetail = 2;
-    int64 savedStylesCount = 3; // number of styles got added/updated successfully
+    repeated StreetStyleObject streetStyles = 3;
+    int32 streetStylesCount = 4;    //no of street styles to expect
 }
-
-message ShoppableItem {
-    string title = 1;
-    repeated string crossSellStyleIds = 2; // ordered list lower rank comes first
-}
-
 message StreetStyleObject {
     string id = 1;
     string imageUrl = 2;
     string credit = 3;
     repeated ShoppableItem shoppableItems = 4;
 }
-
-message StreetStyles {
-    repeated StreetStyleObject streetStyles = 1;
+message ShoppableItem {
+    string title = 1;
+    repeated string crossSellStyleIds = 2; // ordered list lower rank comes first
 }
-
-message StreetStylesResponse {
-    int32 statusCode = 1;
-    string statusDetail = 2;
-    int64 savedStreetStyleIds = 3; // number of street styles got added/updated successfully
+message LoginRequest {
+    string username = 1;
+    string password = 2;
 }
-
+message LoginResponse {
+    string jwtToken = 1;
+    int32 statusCode = 2;
+    string statusDetail = 3;
+}
+message StylingIdeaRequest{
+    string authToken = 1;
+}
+message StreetStyleRequest{
+    string authToken = 1;
+}
 service alamodeStream {
-    rpc SetStylingIdeas (stream StylingIdea) returns (StylingIdeaResponse) {
+    rpc login (LoginRequest) returns (LoginResponse){
     }
-    rpc SetStreetStylingIdeas (stream StreetStyles) returns (StreetStylesResponse) {
+    rpc GetStylingIdeas (StylingIdeaRequest) returns (stream StylingIdea) {
+    }
+    rpc GetStreetStylingIdeas (StreetStyleRequest) returns (stream StreetStyles) {
     }
 }
 
