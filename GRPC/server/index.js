@@ -99,11 +99,18 @@ async function GetStylingIdeas(call, callback) {
           streetStylingObjectId: recommendations[key]
         }
       })
+      
       call.write({
         statusCode: 200,
         statusDetail: "Ok",
-        stylingIdeas,
-        stylingIdeasCount: stylingIdeas.length
+        stylingIdeas: [stylingIdeas[0]],
+        stylingIdeasCount: 1    //batchwise length
+      })
+      call.write({
+        statusCode: 200,
+        statusDetail: "Ok",
+        stylingIdeas: [stylingIdeas[1]],
+        stylingIdeasCount: 1    //batchwise length
       })
       call.end();
     } else {
