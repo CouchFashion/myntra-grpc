@@ -112,6 +112,7 @@ async function GetStylingIdeas(call, callback) {
       }
       call.end();
     } else {
+      console.log('unauthenticated')
       callback(null ,{
         statusCode: 403,
         statusDetail: auth.errorMessage,
@@ -120,6 +121,7 @@ async function GetStylingIdeas(call, callback) {
       })
     }    
   } catch (error) {
+    console.log(error.message)
     callback(null,{
       statusCode: 500,
       statusDetail: "Internal Error",
@@ -151,6 +153,7 @@ async function GetStreetStylingIdeas(call, callback) {
       }
       call.end();
     } else {
+      console.log('unauthenticated')
       callback(null ,{
         statusCode: 403,
         statusDetail: auth.errorMessage,
@@ -159,6 +162,7 @@ async function GetStreetStylingIdeas(call, callback) {
       })
     }    
   } catch (error) {
+    console.log(error.message)
     callback(null,{
       statusCode: 500,
       statusDetail: "Internal Error",
