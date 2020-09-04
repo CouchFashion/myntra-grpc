@@ -91,7 +91,7 @@ async function GetStylingIdeas(call, callback) {
     let token = call.request.authToken; //authorization Token
     let auth = await authenticateRequest(token);
     if(auth.authenticated){
-      let stylingIdeas = [];
+      let stylingIdeas = await utils.getStyleIdeas();
       call.write({
         statusCode: 200,
         statusDetail: "Ok",
@@ -117,12 +117,12 @@ async function GetStylingIdeas(call, callback) {
     //To-Do: email the error from here
   }
 }
-function GetStreetStylingIdeas(call, callback) {
+async function GetStreetStylingIdeas(call, callback) {
   try {
     let token = call.request.authToken; //authorization Token
     let auth = await authenticateRequest(token);
     if(auth.authenticated){
-      let streetStyles = [];
+      let streetStyles = await utils.getStreetStyleIdeas();
       call.write({
         statusCode: 200,
         statusDetail: "Ok",
@@ -151,11 +151,11 @@ function GetStreetStylingIdeas(call, callback) {
 
 function main() {
   //ssl on
-  // const rootCert = fs.readFileSync(path.join(__dirname, "server-certs", "ca.crt"));
-  // const privateKey = fs.readFileSync(path.join(__dirname, "server-certs", "server.key"));
-  // const certChain = fs.readFileSync(path.join(__dirname, "server-certs", "server.crt"));
-  // const keyCertPairs = [{privateKey,certChain}];
-  // const checkClientCertificate = true;
+  const rootCert = fs.readFileSync(path.join(__dirname, "server-certs", "ca.crt"));
+  const privateKey = fs.readFileSync(path.join(__dirname, "server-certs", "server.key"));
+  const certChain = fs.readFileSync(path.join(__dirname, "server-certs", "server.crt"));
+  const keyCertPairs = [{private_key:privateKey,cert_chain:certChain}];
+  const checkClientCertificate = true;
   
   const server = new grpc.Server();
   server.addService(hello_proto.alamodeStream.service, {
@@ -165,8 +165,8 @@ function main() {
   });
   server.bind(
     '0.0.0.0:50051', 
-    grpc.ServerCredentials.createInsecure()
-    // grpc.ServerCredentials.createSsl(rootCert,keyCertPairs, checkClientCertificate)
+    // grpc.ServerCredentials.createInsecure()
+    grpc.ServerCredentials.createSsl(rootCert,keyCertPairs, checkClientCertificate)
     );
     server.start();
   }
@@ -187,10 +187,10 @@ function main() {
   
   
   // `privkey.pem`  : the private key for your certificate.
-  // `fullchain.pem`: the certificate file used in most server software.
+  // `fullchain.pem`: the certificate file used in most server software.  //ca.crt
   // `chain.pem`    : used for OCSP stapling in Nginx >=1.3.7.
   // `cert.pem`     : will break many server configurations, and should not be used
-  //                  without reading further documentation (see link below).
+  //                  without reading further documentation (see link below). //server.crt
   
   // WARNING: DO NOT MOVE OR RENAME THESE FILES!
   //          Certbot expects these files to remain in this location in order

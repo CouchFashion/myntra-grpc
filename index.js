@@ -1,6 +1,6 @@
 const recommendations = require('./data/recommendations.json');
 const streetStyleObjects = require('./data/streetStyles.json');
-const {SetStylingIdeas, SetStreetStylingIdeas, Login, GetStylingIdeas} = require("./GRPC/client/");  //Resolutions => OK | FAILED
+const {Login, GetStylingIdeas} = require("./GRPC/client/");  //Resolutions => OK | FAILED
 
 (async () => {
   let productsIds = Object.keys(recommendations);

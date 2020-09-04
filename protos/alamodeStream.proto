@@ -22,6 +22,7 @@ message StreetStyleObject {
     string imageUrl = 2;
     string credit = 3;
     repeated ShoppableItem shoppableItems = 4;
+    string myntraImageUrl = 5;
 }
 message ShoppableItem {
     string title = 1;
@@ -43,7 +44,7 @@ message StreetStyleRequest{
     string authToken = 1;
 }
 service alamodeStream {
-    rpc login (LoginRequest) returns (LoginResponse){
+    rpc Login (LoginRequest) returns (LoginResponse){
     }
     rpc GetStylingIdeas (StylingIdeaRequest) returns (stream StylingIdea) {
     }
