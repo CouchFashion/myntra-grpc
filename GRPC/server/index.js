@@ -1,4 +1,5 @@
 const PROTO_PATH = __dirname + '/../../protos/alamodeStream.proto';
+const recommendations = require("../../data/recommendations.json");
 const grpc = require('grpc');
 const protoLoader = require('@grpc/proto-loader');
 const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
@@ -91,7 +92,13 @@ async function GetStylingIdeas(call, callback) {
     let token = call.request.authToken; //authorization Token
     let auth = await authenticateRequest(token);
     if(auth.authenticated){
-      let stylingIdeas = await utils.getStyleIdeas();
+      // let stylingIdeas = await utils.getStyleIdeas();
+      let stylingIdeas = Object.keys(recommendations).map(key => {
+        return {
+          styleId: key,
+          streetStylingObjectId: recommendations[key]
+        }
+      })
       call.write({
         statusCode: 200,
         statusDetail: "Ok",
@@ -122,7 +129,8 @@ async function GetStreetStylingIdeas(call, callback) {
     let token = call.request.authToken; //authorization Token
     let auth = await authenticateRequest(token);
     if(auth.authenticated){
-      let streetStyles = await utils.getStreetStyleIdeas();
+      // let streetStyles = await utils.getStreetStyleIdeas();
+      let streetStyles = [];
       call.write({
         statusCode: 200,
         statusDetail: "Ok",
