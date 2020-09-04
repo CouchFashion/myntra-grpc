@@ -138,7 +138,7 @@ async function GetStreetStylingIdeas(call, callback) {
     let auth = await authenticateRequest(token);
     if(auth.authenticated){
       // let streetStyles = await utils.getStreetStyleIdeas();
-      let streetStyles = ss.map(streetStyle => {
+      let streetStyles = Object.keys(ss).map(streetStyle => {
         streetStyle.myntraImageUrl = "";
         return streetStyle;
       });
