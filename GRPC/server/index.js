@@ -3,6 +3,7 @@ const recommendations = require("../../data/recommendations.json");
 const ss = require("../../data/streetStyles.json");
 const grpc = require('grpc');
 const protoLoader = require('@grpc/proto-loader');
+const batchSize = 2;
 const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
   keepCase: true,
   longs: String,
@@ -100,19 +101,15 @@ async function GetStylingIdeas(call, callback) {
           streetStylingObjectId: recommendations[key]
         }
       })
-      
-      call.write({
-        statusCode: 200,
-        statusDetail: "Ok",
-        stylingIdeas: [stylingIdeas[0]],
-        stylingIdeasCount: 1    //batchwise length
-      })
-      call.write({
-        statusCode: 200,
-        statusDetail: "Ok",
-        stylingIdeas: [stylingIdeas[1]],
-        stylingIdeasCount: 1    //batchwise length
-      })
+      for(let i=0;i<stylingIdeas.length;i+=batchSize){
+        let batch = stylingIdeas.slice(i,i+batchSize);
+        call.write({
+          statusCode: 200,
+          statusDetail: "Ok",
+          stylingIdeas: batch,
+          stylingIdeasCount: batch.length    //batchwise length
+        })    
+      }
       call.end();
     } else {
       callback(null ,{
@@ -143,9 +140,8 @@ async function GetStreetStylingIdeas(call, callback) {
         streetStyle.myntraImageUrl = "";
         return streetStyle;
       });
-      let batchSize = 2;
       for(let i=0;i<streetStyles.length;i+=batchSize){
-        let batch = streetStyles.slice(i,batchSize);
+        let batch = streetStyles.slice(i,i+batchSize);
         call.write({
           statusCode: 200,
           statusDetail: "Ok",

@@ -1,6 +1,6 @@
 const recommendations = require('./data/recommendations.json');
 const streetStyleObjects = require('./data/streetStyles.json');
-const {Login, GetStylingIdeas} = require("./GRPC/client/");  //Resolutions => OK | FAILED
+const {Login, GetStylingIdeas,GetStreetStylingIdeas} = require("./GRPC/client/");  //Resolutions => OK | FAILED
 
 (async () => {
   let productsIds = Object.keys(recommendations);
@@ -47,7 +47,7 @@ const {GRPC_SOURCE} = require("./constants/index.js");
   let res = await Login("myntra-tech","WTJZcWJYbHVkSEpoWDNOMGVXeGxhVzV6Y0dseVlYUnBiMjQ9");
   console.log(res)
   setTimeout(async () => {
-    let res1 = await GetStylingIdeas(res.jwtToken);
-    console.log(res1)
+    let res1 = await GetStreetStylingIdeas(res.jwtToken);
+    console.log(JSON.parse(JSON.stringify(res1)))
   },2000)
 })();

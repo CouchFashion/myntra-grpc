@@ -16,11 +16,13 @@ const hello_proto = grpc.loadPackageDefinition(
     packageDefinition
   ).proto;
 const rootCert = fs.readFileSync(path.join(__dirname, "../server/server-certs", "ca.crt"));
-const privateKey = fs.readFileSync(path.join(__dirname, "../server/server-certs", "server.key"));
-const certChain = fs.readFileSync(path.join(__dirname, "../server/server-certs", "server.crt"));
+// const privateKey = fs.readFileSync(path.join(__dirname, "../server/server-certs", "server.key"));
+// const certChain = fs.readFileSync(path.join(__dirname, "../server/server-certs", "server.crt"));
 const client = new hello_proto.alamodeStream(
-  '0.0.0.0:50051',
-  grpc.credentials.createSsl(rootCert,privateKey,certChain)
+  '34.93.164.244:50051',
+  grpc.credentials.createInsecure()
+  // 'grpc.couchfashion.com',
+  // grpc.credentials.createSsl(rootCert)
 );
 // client.send(null, meta, null);
 const Login = async function(id, pass){
@@ -90,6 +92,19 @@ const GetStylingIdeas = async function(token){
     })
   })
 }
+const GetStreetStylingIdeas = async function(token){
+  return new Promise((resolve, reject) => {
+    let at = { authToken: token}
+    let call = client.GetStreetStylingIdeas(at);
+    let a = [];
+    call.on('data', function(streetStyles){
+      a.push(streetStyles)
+    })
+    call.on('end',function(){
+      resolve(a)
+    })
+  })
+}
 const SetStreetStylingIdeas = async function(streetStyles, repeatedCount = 0) {
   return new Promise((resolve,reject) => {
     try {
@@ -133,4 +148,4 @@ const SetStreetStylingIdeas = async function(streetStyles, repeatedCount = 0) {
   })
 }
 
-module.exports = {GetStylingIdeas,Login}
+module.exports = {GetStylingIdeas,Login, GetStreetStylingIdeas}
