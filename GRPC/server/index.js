@@ -1,5 +1,6 @@
 const PROTO_PATH = __dirname + '/../../protos/alamodeStream.proto';
 const recommendations = require("../../data/recommendations.json");
+const ss = require("../../data/streetStyles.json");
 const grpc = require('grpc');
 const protoLoader = require('@grpc/proto-loader');
 const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
@@ -137,13 +138,20 @@ async function GetStreetStylingIdeas(call, callback) {
     let auth = await authenticateRequest(token);
     if(auth.authenticated){
       // let streetStyles = await utils.getStreetStyleIdeas();
-      let streetStyles = [];
-      call.write({
-        statusCode: 200,
-        statusDetail: "Ok",
-        streetStyles,
-        streetStylesCount: streetStyles.length
-      })
+      let streetStyles = ss.map(streetStyle => {
+        streetStyle.myntraImageUrl = "";
+        return streetStyle;
+      });
+      let batchSize = 2;
+      for(let i=0;i<streetStyles.length;i+=batchSize){
+        let batch = streetStyles.slice(i,batchSize);
+        call.write({
+          statusCode: 200,
+          statusDetail: "Ok",
+          streetStyles: batch,
+          streetStylesCount: batch.length
+        })  
+      }
       call.end();
     } else {
       callback(null ,{
