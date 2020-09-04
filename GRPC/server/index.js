@@ -113,21 +113,35 @@ async function GetStylingIdeas(call, callback) {
       call.end();
     } else {
       console.log('unauthenticated')
-      callback(null ,{
+      call.write({
         statusCode: 403,
         statusDetail: auth.errorMessage,
         stylingIdeas: [],
         stylingIdeasCount: 0
       })
+      call.end();
+      // callback(null ,{
+      //   statusCode: 403,
+      //   statusDetail: auth.errorMessage,
+      //   stylingIdeas: [],
+      //   stylingIdeasCount: 0
+      // })
     }    
   } catch (error) {
     console.log(error.message)
-    callback(null,{
+    call.write({
       statusCode: 500,
       statusDetail: "Internal Error",
       stylingIdeas: [],
       stylingIdeasCount: 0
     })
+    call.end();
+    // callback(null,{
+    //   statusCode: 500,
+    //   statusDetail: "Internal Error",
+    //   stylingIdeas: [],
+    //   stylingIdeasCount: 0
+    // })
     //To-Do: email the error from here
   }
 }
@@ -154,21 +168,35 @@ async function GetStreetStylingIdeas(call, callback) {
       call.end();
     } else {
       console.log('unauthenticated')
-      callback(null ,{
+      call.write({
         statusCode: 403,
         statusDetail: auth.errorMessage,
         streetStyles: [],
         streetStylesCount: 0
       })
+      call.end();
+      // callback(null ,{
+      //   statusCode: 403,
+      //   statusDetail: auth.errorMessage,
+      //   streetStyles: [],
+      //   streetStylesCount: 0
+      // })
     }    
   } catch (error) {
     console.log(error.message)
-    callback(null,{
+    call.write({
       statusCode: 500,
       statusDetail: "Internal Error",
       streetStyles: [],
       streetStylesCount: 0
     })
+    call.end();
+    // callback(null,{
+    //   statusCode: 500,
+    //   statusDetail: "Internal Error",
+    //   streetStyles: [],
+    //   streetStylesCount: 0
+    // })
     //To-Do: email the error from here
   }
 }
