@@ -19,7 +19,8 @@ const rootCert = fs.readFileSync(path.join(__dirname, "../server/server-certs", 
 // const privateKey = fs.readFileSync(path.join(__dirname, "../server/server-certs", "server.key"));
 // const certChain = fs.readFileSync(path.join(__dirname, "../server/server-certs", "server.crt"));
 const client = new hello_proto.alamodeStream(
-  '34.93.164.244:50051',
+  // '34.93.164.244:50051',
+  '0.0.0.0:50051',
   grpc.credentials.createInsecure()
   // 'grpc.couchfashion.com',
   // grpc.credentials.createSsl(rootCert)
