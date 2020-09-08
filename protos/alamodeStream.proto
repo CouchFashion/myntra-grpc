@@ -43,12 +43,33 @@ message StylingIdeaRequest{
 message StreetStyleRequest{
     string authToken = 1;
 }
+
+message AckStylingIdeasRequest{
+    string jwtToken = 1;
+    repeated string styleIds = 2;
+}
+
+message AckStreetStylesRequest{
+    string jwtToken = 1;
+    repeated string streetStyleObjectId = 2;
+}
+
+message SimpleResponse{
+    int32 statusCode = 1;
+    string statusDetail = 2;
+}
+
+
 service alamodeStream {
     rpc Login (LoginRequest) returns (LoginResponse){
     }
     rpc GetStylingIdeas (StylingIdeaRequest) returns (stream StylingIdea) {
     }
     rpc GetStreetStylingIdeas (StreetStyleRequest) returns (stream StreetStyles) {
+    }
+    rpc AckStylingIdeas (AckStylingIdeasRequest) returns (SimpleResponse){
+    }
+    rpc AckStreetStyles (AckStreetStylesRequest) returns (SimpleResponse){
     }
 }
 

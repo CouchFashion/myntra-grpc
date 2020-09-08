@@ -3,7 +3,7 @@ const recommendations = require("../../data/recommendations.json");
 const ss = require("../../data/streetStyles.json");
 const grpc = require('grpc');
 const protoLoader = require('@grpc/proto-loader');
-const batchSize = 2;
+const batchSize = 500;
 const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
   keepCase: true,
   longs: String,
@@ -94,7 +94,8 @@ async function GetStylingIdeas(call, callback) {
     let token = call.request.authToken; //authorization Token
     let auth = await authenticateRequest(token);
     if(auth.authenticated){
-      // let stylingIdeas = await utils.getStyleIdeas();
+      // let stylingIdeas = await utils.getStyleIdeas(auth.jwtToken.body.user);
+      console.log(stylingIdeas.length)
       let stylingIdeas = Object.keys(recommendations).map(key => {
         return {
           styleId: key,
@@ -120,12 +121,6 @@ async function GetStylingIdeas(call, callback) {
         stylingIdeasCount: 0
       })
       call.end();
-      // callback(null ,{
-      //   statusCode: 403,
-      //   statusDetail: auth.errorMessage,
-      //   stylingIdeas: [],
-      //   stylingIdeasCount: 0
-      // })
     }    
   } catch (error) {
     console.log(error.message)
@@ -136,12 +131,6 @@ async function GetStylingIdeas(call, callback) {
       stylingIdeasCount: 0
     })
     call.end();
-    // callback(null,{
-    //   statusCode: 500,
-    //   statusDetail: "Internal Error",
-    //   stylingIdeas: [],
-    //   stylingIdeasCount: 0
-    // })
     //To-Do: email the error from here
   }
 }
@@ -150,7 +139,7 @@ async function GetStreetStylingIdeas(call, callback) {
     let token = call.request.authToken; //authorization Token
     let auth = await authenticateRequest(token);
     if(auth.authenticated){
-      // let streetStyles = await utils.getStreetStyleIdeas();
+      // let streetStyles = await utils.getStreetStyleIdeas(auth.jwtToken.body.user);
       let streetStyles = Object.keys(ss).map(id => {
         let streetStyle = ss[id];
         streetStyle.myntraImageUrl = "";
@@ -175,12 +164,6 @@ async function GetStreetStylingIdeas(call, callback) {
         streetStylesCount: 0
       })
       call.end();
-      // callback(null ,{
-      //   statusCode: 403,
-      //   statusDetail: auth.errorMessage,
-      //   streetStyles: [],
-      //   streetStylesCount: 0
-      // })
     }    
   } catch (error) {
     console.log(error.message)
@@ -191,16 +174,53 @@ async function GetStreetStylingIdeas(call, callback) {
       streetStylesCount: 0
     })
     call.end();
-    // callback(null,{
-    //   statusCode: 500,
-    //   statusDetail: "Internal Error",
-    //   streetStyles: [],
-    //   streetStylesCount: 0
-    // })
     //To-Do: email the error from here
   }
 }
-
+async function AckStylingIdeas(call, callback){
+  try {
+    let token = call.request.authToken; //authorization Token
+    let auth = await authenticateRequest(token);
+    if(auth.authenticated){
+      let ids = call.request.styleIds;
+      await utils.ackProducts(ids);
+    } else {
+      console.log('unauthenticated')
+      callback(null,{
+        statusCode: 403,
+        statusDetail: auth.errorMessage
+      })
+    }
+  } catch (error) {
+    callback(null,{
+      statusCode: 500,
+      statusDetail: error.message
+    })
+    //To-Do: email the error from here
+  }
+}
+async function AckStreetStylesRequest(call, callback){
+  try {
+    let token = call.request.authToken; //authorization Token
+    let auth = await authenticateRequest(token);
+    if(auth.authenticated){
+      let ids = call.request.streetStyleObjectId;
+      await utils.ackStyles(ids);
+    } else {
+      console.log('unauthenticated')
+      callback(null,{
+        statusCode: 403,
+        statusDetail: auth.errorMessage
+      })
+    }
+  } catch (error) {
+    callback(null,{
+      statusCode: 500,
+      statusDetail: error.message
+    })
+    //To-Do: email the error from here
+  }
+}
 function main() {
   //ssl on
   const rootCert = fs.readFileSync(path.join(__dirname, "server-certs", "ca.crt"));
@@ -213,7 +233,9 @@ function main() {
   server.addService(hello_proto.alamodeStream.service, {
     login: Login,
     getStylingIdeas: GetStylingIdeas, 
-    getStreetStylingIdeas: GetStreetStylingIdeas
+    getStreetStylingIdeas: GetStreetStylingIdeas,
+    ackStylingIdeas: AckStylingIdeas,
+    ackStreetStylesRequest: AckStreetStylesRequest
   });
   server.bind(
     '0.0.0.0:50051', 
