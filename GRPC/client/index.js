@@ -19,8 +19,10 @@ const rootCert = fs.readFileSync(path.join(__dirname, "../server/server-certs", 
 const privateKey = fs.readFileSync(path.join(__dirname, "../server/server-certs", "server.key"));
 const certChain = fs.readFileSync(path.join(__dirname, "../server/server-certs", "server.crt"));
 const client = new hello_proto.alamodeStream(
+  // '0.0.0.0:50051',
+  // grpc.credentials.createInsecure()
   'grpc.couchfashion.com:50051',
-  grpc.credentials.createSsl(rootCert,privateKey,certChain)
+  grpc.credentials.createSsl(rootCert)
 );
 // client.send(null, meta, null);
 const Login = async function(id, pass){
@@ -79,7 +81,7 @@ const SetStylingIdeas = async function(stylingIdeas, repeatedCount = 0){
 }
 const GetStylingIdeas = async function(token){
   return new Promise((resolve, reject) => {
-    let at = { authToken: token}
+    let at = { jwtToken: token}
     let call = client.GetStylingIdeas(at);
     let a = [];
     call.on('data', function(stylingideas){
@@ -92,7 +94,7 @@ const GetStylingIdeas = async function(token){
 }
 const GetStreetStylingIdeas = async function(token){
   return new Promise((resolve, reject) => {
-    let at = { authToken: token}
+    let at = { jwtToken: token}
     let call = client.GetStreetStylingIdeas(at);
     let a = [];
     call.on('data', function(streetStyles){
@@ -100,6 +102,22 @@ const GetStreetStylingIdeas = async function(token){
     })
     call.on('end',function(){
       resolve(a)
+    })
+  })
+}
+const AckStyleIdeas = async function(token, styleIds){
+  return new Promise((resolve,reject) => {
+    client.AckStylingIdeas({jwtToken: token,styleIds },function(err, response){
+      if(err) reject(err)
+      resolve(response);
+    })
+  })
+}
+const AckStreetStyles = async function(token, styleIds){
+  return new Promise((resolve,reject) => {
+    client.AckStreetStyles({jwtToken: token,streetStyleObjectId: styleIds },function(err, response){
+      if(err) reject(err)
+      resolve(response);
     })
   })
 }
@@ -146,4 +164,4 @@ const SetStreetStylingIdeas = async function(streetStyles, repeatedCount = 0) {
   })
 }
 
-module.exports = {GetStylingIdeas,Login, GetStreetStylingIdeas}
+module.exports = {GetStylingIdeas,Login, GetStreetStylingIdeas, AckStyleIdeas, AckStreetStyles}

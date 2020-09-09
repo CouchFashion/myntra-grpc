@@ -56,7 +56,7 @@ async function Login(call, callback){
       callback(null,{
         jwtToken: token,
         statusCode: 200,
-        statusDetail: "OK"
+        statusDetail: "Ok"
       })
     } else {
       callback(null,{
@@ -91,7 +91,7 @@ async function authenticateRequest(token){
 }
 async function GetStylingIdeas(call, callback) {
   try {
-    let token = call.request.authToken; //authorization Token
+    let token = call.request.jwtToken; //authorization Token
     let auth = await authenticateRequest(token);
     if(auth.authenticated){
       // let stylingIdeas = await utils.getStyleIdeas(auth.jwtToken.body.user);
@@ -136,7 +136,7 @@ async function GetStylingIdeas(call, callback) {
 }
 async function GetStreetStylingIdeas(call, callback) {
   try {
-    let token = call.request.authToken; //authorization Token
+    let token = call.request.jwtToken; //authorization Token
     let auth = await authenticateRequest(token);
     if(auth.authenticated){
       // let streetStyles = await utils.getStreetStyleIdeas(auth.jwtToken.body.user);
@@ -179,11 +179,15 @@ async function GetStreetStylingIdeas(call, callback) {
 }
 async function AckStylingIdeas(call, callback){
   try {
-    let token = call.request.authToken; //authorization Token
+    let token = call.request.jwtToken; //authorization Token
     let auth = await authenticateRequest(token);
     if(auth.authenticated){
       let ids = call.request.styleIds;
       await utils.ackProducts(ids);
+      callback(null,{
+        statusCode: 200,
+        statusDetail: "Ok"
+      })
     } else {
       console.log('unauthenticated')
       callback(null,{
@@ -201,11 +205,15 @@ async function AckStylingIdeas(call, callback){
 }
 async function AckStreetStyles(call, callback){
   try {
-    let token = call.request.authToken; //authorization Token
+    let token = call.request.jwtToken; //authorization Token
     let auth = await authenticateRequest(token);
     if(auth.authenticated){
       let ids = call.request.streetStyleObjectId;
       await utils.ackStyles(ids);
+      callback(null,{
+        statusCode: 200,
+        statusDetail: "Ok"
+      })
     } else {
       console.log('unauthenticated')
       callback(null,{
@@ -227,7 +235,7 @@ function main() {
   const privateKey = fs.readFileSync(path.join(__dirname, "server-certs", "server.key"));
   const certChain = fs.readFileSync(path.join(__dirname, "server-certs", "server.crt"));
   const keyCertPairs = [{private_key:privateKey,cert_chain:certChain}];
-  const checkClientCertificate = true;
+  const checkClientCertificate = false;
   
   const server = new grpc.Server();
   server.addService(hello_proto.alamodeStream.service, {

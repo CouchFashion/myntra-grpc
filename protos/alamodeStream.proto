@@ -38,10 +38,10 @@ message LoginResponse {
     string statusDetail = 3;
 }
 message StylingIdeaRequest{
-    string authToken = 1;
+    string jwtToken = 1;
 }
 message StreetStyleRequest{
-    string authToken = 1;
+    string jwtToken = 1;
 }
 
 message AckStylingIdeasRequest{
