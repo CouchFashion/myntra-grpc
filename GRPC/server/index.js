@@ -95,7 +95,7 @@ async function GetStylingIdeas(call, callback) {
     let auth = await authenticateRequest(token);
     if(auth.authenticated){
       // let stylingIdeas = await utils.getStyleIdeas(auth.jwtToken.body.user);
-      console.log(stylingIdeas.length)
+      // console.log(stylingIdeas.length)
       let stylingIdeas = Object.keys(recommendations).map(key => {
         return {
           styleId: key,
@@ -199,7 +199,7 @@ async function AckStylingIdeas(call, callback){
     //To-Do: email the error from here
   }
 }
-async function AckStreetStylesRequest(call, callback){
+async function AckStreetStyles(call, callback){
   try {
     let token = call.request.authToken; //authorization Token
     let auth = await authenticateRequest(token);
@@ -235,7 +235,7 @@ function main() {
     getStylingIdeas: GetStylingIdeas, 
     getStreetStylingIdeas: GetStreetStylingIdeas,
     ackStylingIdeas: AckStylingIdeas,
-    ackStreetStylesRequest: AckStreetStylesRequest
+    ackStreetStyles: AckStreetStyles
   });
   server.bind(
     '0.0.0.0:50051', 

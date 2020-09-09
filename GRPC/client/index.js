@@ -16,14 +16,11 @@ const hello_proto = grpc.loadPackageDefinition(
     packageDefinition
   ).proto;
 const rootCert = fs.readFileSync(path.join(__dirname, "../server/server-certs", "ca.crt"));
-// const privateKey = fs.readFileSync(path.join(__dirname, "../server/server-certs", "server.key"));
-// const certChain = fs.readFileSync(path.join(__dirname, "../server/server-certs", "server.crt"));
+const privateKey = fs.readFileSync(path.join(__dirname, "../server/server-certs", "server.key"));
+const certChain = fs.readFileSync(path.join(__dirname, "../server/server-certs", "server.crt"));
 const client = new hello_proto.alamodeStream(
-  // '34.93.164.244:50051',
-  '0.0.0.0:50051',
-  grpc.credentials.createInsecure()
-  // 'grpc.couchfashion.com',
-  // grpc.credentials.createSsl(rootCert)
+  'grpc.couchfashion.com:50051',
+  grpc.credentials.createSsl(rootCert,privateKey,certChain)
 );
 // client.send(null, meta, null);
 const Login = async function(id, pass){
