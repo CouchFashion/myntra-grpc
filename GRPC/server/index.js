@@ -239,8 +239,8 @@ function main() {
   });
   server.bind(
     '0.0.0.0:50051', 
-    grpc.ServerCredentials.createInsecure()
-    // grpc.ServerCredentials.createSsl(rootCert,keyCertPairs, checkClientCertificate)
+    // grpc.ServerCredentials.createInsecure()
+    grpc.ServerCredentials.createSsl(rootCert,keyCertPairs, checkClientCertificate)
     );
     server.start();
   }
