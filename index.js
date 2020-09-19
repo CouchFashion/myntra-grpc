@@ -47,7 +47,13 @@ const {GRPC_SOURCE} = require("./constants/index.js");
   let res = await Login("myntra-tech","WTJZcWJYbHVkSEpoWDNOMGVXeGxhVzV6Y0dseVlYUnBiMjQ9");
   console.log(res)
   setTimeout(async () => {
-    let res1 = await AckStreetStyles(res.jwtToken, ["2114929"]);
+    let res1 = await GetStylingIdeas(res.jwtToken);
     console.log(JSON.stringify(res1))
+    let res2 = await AckStyleIdeas(res.jwtToken, res1[0] ? res1[0].stylingIdeas.map(item => item.styleId) : []);
+    console.log(res2)
+    let res3 = await GetStreetStylingIdeas(res.jwtToken);
+    console.log(JSON.stringify(res3))
+    let res4 = await AckStreetStyles(res.jwtToken, res3[0] ? res3[0].streetStyles.map(item => item.id) : []);
+    console.log(res4)
   },2000)
 })();

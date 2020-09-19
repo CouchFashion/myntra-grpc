@@ -1,6 +1,4 @@
 const PROTO_PATH = __dirname + '/../../protos/alamodeStream.proto';
-const recommendations = require("../../data/recommendations.json");
-const ss = require("../../data/streetStyles.json");
 const grpc = require('grpc');
 const protoLoader = require('@grpc/proto-loader');
 const batchSize = 500;
@@ -94,14 +92,7 @@ async function GetStylingIdeas(call, callback) {
     let token = call.request.jwtToken; //authorization Token
     let auth = await authenticateRequest(token);
     if(auth.authenticated){
-      // let stylingIdeas = await utils.getStyleIdeas(auth.jwtToken.body.user);
-      // console.log(stylingIdeas.length)
-      let stylingIdeas = Object.keys(recommendations).map(key => {
-        return {
-          styleId: key,
-          streetStylingObjectId: recommendations[key]
-        }
-      })
+      let stylingIdeas = await utils.getStyleIdeas(auth.jwtToken.body.user);
       for(let i=0;i<stylingIdeas.length;i+=batchSize){
         let batch = stylingIdeas.slice(i,i+batchSize);
         call.write({
@@ -139,12 +130,7 @@ async function GetStreetStylingIdeas(call, callback) {
     let token = call.request.jwtToken; //authorization Token
     let auth = await authenticateRequest(token);
     if(auth.authenticated){
-      // let streetStyles = await utils.getStreetStyleIdeas(auth.jwtToken.body.user);
-      let streetStyles = Object.keys(ss).map(id => {
-        let streetStyle = ss[id];
-        streetStyle.myntraImageUrl = "";
-        return streetStyle;
-      });
+      let streetStyles = await utils.getStreetStyleIdeas(auth.jwtToken.body.user);
       for(let i=0;i<streetStyles.length;i+=batchSize){
         let batch = streetStyles.slice(i,i+batchSize);
         call.write({

@@ -16,8 +16,6 @@ const hello_proto = grpc.loadPackageDefinition(
     packageDefinition
   ).proto;
 const rootCert = fs.readFileSync(path.join(__dirname, "../server/server-certs", "ca.crt"));
-const privateKey = fs.readFileSync(path.join(__dirname, "../server/server-certs", "server.key"));
-const certChain = fs.readFileSync(path.join(__dirname, "../server/server-certs", "server.crt"));
 const client = new hello_proto.alamodeStream(
   // '0.0.0.0:50051',
   // grpc.credentials.createInsecure()
