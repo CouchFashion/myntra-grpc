@@ -6,9 +6,13 @@ let dbObject;
 initObject.getMongoDB()
   .then(dbo => {
     dbObject = dbo;
+    console.log('Mode',process.env.mode)
     if(process.env.mode === "dev"){
       MyntraProducts = dbObject.collection("myntra_products_demo");
       StreetStyles = dbObject.collection("streetStyles_demo");
+    } else if(process.env.mode === "test"){
+      MyntraProducts = dbObject.collection("new_top_sell_myntra_products");
+      StreetStyles = dbObject.collection("StreetStyles");
     } else {
       MyntraProducts = dbObject.collection("top_sell_myntra_products");
       StreetStyles = dbObject.collection("StreetStyles");
@@ -119,21 +123,61 @@ const updateReturnedStreetStyles = async function(styles){
   }
   return;
 }
+async function getProducts(){
+  let products;
+  if(process.env.mode === 'test'){
+    products = await MyntraProducts.find({
+      "mapped_images.source": "MarkableAI",
+      readyForMyntra: true
+    }).toArray();
+  } else if(process.env.mode === 'dev'){
+    products = await MyntraProducts.find({
+      readyForMyntra: true
+    }).toArray();
+  } else {
+    products = await MyntraProducts.find({
+      readyForMyntra: true,
+      reviewed: true
+    }).toArray();
+  }
+  return products;
+}
+function getStyles(product){
+  let styles = [];
+  if(process.env.mode === 'test'){
+    styles = product.mapped_images;    
+  } else if(process.env.mode === 'dev'){
+    styles = product.mapped_images.filter(style => style.source === 'MarkableAI')
+  } else {
+    styles = product.mapped_images.filter(style => style.checked && style.source === 'MarkableAI');
+  }
+  return styles.map(style => style.name);
+}
 const getStyleIdeas = async function(){
-  let products = await MyntraProducts.find({
-    readyForMyntra: true,
-    reviewed: true
-  }).toArray();
+  let products = await getProducts();
   console.log("products", products.length)
   let stylingIdeas = products.map(product => {
-    let styles = product.mapped_images.filter(style => style.checked && style.source === 'MarkableAI')
+    let styles = getStyles(product);
     return {
       styleId: product.product_id,
-      streetStylingObjectId: styles.map(style => style.name)
+      streetStylingObjectId: styles
     }
   });
   await updateReturnedProducts(products.map(product => product.product_id));
   return stylingIdeas;
+}
+function getStyleUrl(style){
+  if(process.env.mode === 'test'){
+    if(style.imageSource === "design-team"){
+      return style.globalUrl;
+    } else {
+      return style.imageUrl;
+    }
+  } else if(process.env.mode === 'dev'){
+    return style.imageUrl;
+  } else {
+    return style.globalUrl;
+  }
 }
 const getStreetStyleIdeas = async function(){
   let styles = await StreetStyles.find({
@@ -144,7 +188,7 @@ const getStreetStyleIdeas = async function(){
     let credit = style.credit ? style.credit : "";
     return {
       id: style.id,
-      imageUrl: style.globalUrl,
+      imageUrl: getStyleUrl(style),
       credit: credit,
       shoppableItems: style.shoppableItems,
       myntraImageUrl: ""
