@@ -145,7 +145,7 @@ async function getProducts(){
 function getStyles(product){
   let styles = [];
   if(process.env.mode === 'test'){
-    styles = product.mapped_images;    
+    styles = product.mapped_images.filter(style => style.source === 'MarkableAI');
   } else if(process.env.mode === 'dev'){
     styles = product.mapped_images.filter(style => style.source === 'MarkableAI')
   } else {
