@@ -145,7 +145,7 @@ async function getProducts(){
 function getStyles(product){
   let styles = [];
   if(process.env.mode === 'test'){
-    styles = product.mapped_images.filter(style => style.source === 'MarkableAI');
+    styles = product.mapped_images.filter(style => style.source === 'MarkableAI').slice(0,15);
   } else if(process.env.mode === 'dev'){
     styles = product.mapped_images.filter(style => style.source === 'MarkableAI')
   } else {
@@ -160,7 +160,7 @@ const getStyleIdeas = async function(){
     let styles = getStyles(product);
     return {
       styleId: product.product_id,
-      streetStylingObjectId: styles.slice(0,15)
+      streetStylingObjectId: styles
     }
   });
   await updateReturnedProducts(products.map(product => product.product_id));
