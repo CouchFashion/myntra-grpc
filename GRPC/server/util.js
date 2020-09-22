@@ -160,7 +160,7 @@ const getStyleIdeas = async function(){
     let styles = getStyles(product);
     return {
       styleId: product.product_id,
-      streetStylingObjectId: styles
+      streetStylingObjectId: styles.slice(0,15)
     }
   });
   await updateReturnedProducts(products.map(product => product.product_id));
