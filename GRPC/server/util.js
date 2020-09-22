@@ -171,10 +171,10 @@ function getStyleUrl(style){
     if(style.imageSource === "design-team"){
       return style.globalUrl;
     } else {
-      return style.imageUrl;
+      return style.url;
     }
   } else if(process.env.mode === 'dev'){
-    return style.imageUrl;
+    return style.url;
   } else {
     return style.globalUrl;
   }
