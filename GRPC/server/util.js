@@ -168,6 +168,7 @@ const getStyleIdeas = async function(){
 }
 function getStyleUrl(style){
   if(process.env.mode === 'test'){
+    return style.url;
     if(style.imageSource === "design-team"){
       return style.globalUrl;
     } else {
