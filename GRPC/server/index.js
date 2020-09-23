@@ -1,7 +1,7 @@
 const PROTO_PATH = __dirname + '/../../protos/alamodeStream.proto';
 const grpc = require('grpc');
 const protoLoader = require('@grpc/proto-loader');
-const batchSize = 500;
+const batchSize = 100;
 const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
   keepCase: true,
   longs: String,
