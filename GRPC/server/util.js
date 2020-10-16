@@ -178,6 +178,14 @@ function getStyleUrl(style){
     return style.globalUrl;
   }
 }
+function sortProducts(p1,p2){
+  if(p1.score < p2.score)
+    return 1;
+  else if(p1.score > p2.score)
+    return -1;
+  else
+    return 0;
+}
 const getStreetStyleIdeas = async function(){
   let styles = await StreetStyles.find({
     readyForMyntra: true
@@ -190,7 +198,7 @@ const getStreetStyleIdeas = async function(){
       imageUrl: getStyleUrl(style),
       credit: credit,
       shoppableItems: style.shoppableItems ? style.shoppableItems.map(ss => {
-      	ss.crossSellStyleIds = ss.crossSellStyleIds.map(cs => cs.id);
+      	ss.crossSellStyleIds = ss.crossSellStyleIds.sort(sortProducts).map(cs => cs.id);
 	return ss;
       }) : [],
       myntraImageUrl: ""
