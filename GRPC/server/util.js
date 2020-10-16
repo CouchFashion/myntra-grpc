@@ -11,7 +11,7 @@ initObject.getMongoDB()
       MyntraProducts = dbObject.collection("myntra_products_demo");
       StreetStyles = dbObject.collection("streetStyles_demo");
     } else if(process.env.mode === "test"){
-      MyntraProducts = dbObject.collection("new_top_sell_myntra_products");
+      MyntraProducts = dbObject.collection("top_sell_myntra_products");
       StreetStyles = dbObject.collection("StreetStyles");
     } else {
       MyntraProducts = dbObject.collection("top_sell_myntra_products");
@@ -127,7 +127,6 @@ async function getProducts(){
   let products;
   if(process.env.mode === 'test'){
     products = await MyntraProducts.find({
-      "mapped_images.source": "MarkableAI",
       readyForMyntra: true
     }).toArray();
   } else if(process.env.mode === 'dev'){
@@ -145,7 +144,7 @@ async function getProducts(){
 function getStyles(product){
   let styles = [];
   if(process.env.mode === 'test'){
-    styles = product.mapped_images.filter(style => style.source === 'MarkableAI').slice(0,15);
+    styles = product.mapped_images.filter(style => style.source === 'MarkableAI' && style.checked);
   } else if(process.env.mode === 'dev'){
     styles = product.mapped_images.filter(style => style.source === 'MarkableAI')
   } else {
@@ -168,7 +167,6 @@ const getStyleIdeas = async function(){
 }
 function getStyleUrl(style){
   if(process.env.mode === 'test'){
-    return style.url;
     if(style.imageSource === "design-team"){
       return style.globalUrl;
     } else {
@@ -191,7 +189,10 @@ const getStreetStyleIdeas = async function(){
       id: style.id,
       imageUrl: getStyleUrl(style),
       credit: credit,
-      shoppableItems: style.shoppableItems,
+      shoppableItems: style.shoppableItems ? style.shoppableItems.map(ss => {
+      	ss.crossSellStyleIds = ss.crossSellStyleIds.map(cs => cs.id);
+	return ss;
+      }) : [],
       myntraImageUrl: ""
     }
   })
