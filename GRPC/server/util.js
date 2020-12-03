@@ -166,6 +166,9 @@ const getStyleIdeas = async function(){
   return stylingIdeas;
 }
 function getStyleUrl(style){
+  if(style.isCropped){
+    return style.croppedUrl;
+  }
   if(process.env.mode === 'test'){
     if(style.imageSource === "design-team"){
       return style.globalUrl;
