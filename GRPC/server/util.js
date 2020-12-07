@@ -143,6 +143,8 @@ async function getProducts(){
 }
 function getStyles(product){
   let styles = [];
+  //TO DISABLE THE RECOMMENDATIONS OF A LOT OF PRODUCTS THAT ARE MARKED AS READY FOR MYNTRA
+  return styles;
   if(process.env.mode === 'test'){
     styles = product.mapped_images.filter(style => style.source === 'MarkableAI' && style.checked);
   } else if(process.env.mode === 'dev'){
