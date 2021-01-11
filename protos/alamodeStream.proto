@@ -23,6 +23,7 @@ message StreetStyleObject {
     string credit = 3;
     repeated ShoppableItem shoppableItems = 4;
     string myntraImageUrl = 5;
+    bool isImageUpdated = 6;
 }
 message ShoppableItem {
     string title = 1;

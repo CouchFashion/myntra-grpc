@@ -79,7 +79,8 @@ const ackStyles = async function(ids){
       $set:{
         awaitACK: false,
         readyForMyntra: false,
-        assignedToMyntra: true
+        assignedToMyntra: true,
+        isUpdated: false
       }
     })
   }
@@ -144,7 +145,7 @@ async function getProducts(){
 function getStyles(product){
   let styles = [];
   //TO DISABLE THE RECOMMENDATIONS OF A LOT OF PRODUCTS THAT ARE MARKED AS READY FOR MYNTRA
-  return styles;
+  // return styles;
   if(process.env.mode === 'test'){
     styles = product.mapped_images.filter(style => style.source === 'MarkableAI' && style.checked);
   } else if(process.env.mode === 'dev'){
@@ -168,13 +169,14 @@ const getStyleIdeas = async function(){
   return stylingIdeas;
 }
 function getStyleUrl(style){
-  if(style.isCropped){
-    return style.croppedUrl;
-  }
   if(process.env.mode === 'test'){
     if(style.imageSource === "design-team"){
       return style.globalUrl;
     } else {
+      if(style.isCropped){
+        let version = style.versions.pop();
+        return version.url;
+      }
       return style.url;
     }
   } else if(process.env.mode === 'dev'){
@@ -206,7 +208,8 @@ const getStreetStyleIdeas = async function(){
       	ss.crossSellStyleIds = ss.crossSellStyleIds.sort(sortProducts).map(cs => cs.id);
 	return ss;
       }) : [],
-      myntraImageUrl: ""
+      myntraImageUrl: "",
+      isImageUpdated: style.isUpdated
     }
   })
   await updateReturnedStreetStyles(styles.map(style => style.id));
