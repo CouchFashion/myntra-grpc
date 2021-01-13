@@ -147,7 +147,7 @@ function getStyles(product){
   //TO DISABLE THE RECOMMENDATIONS OF A LOT OF PRODUCTS THAT ARE MARKED AS READY FOR MYNTRA
   // return styles;
   if(process.env.mode === 'test'){
-    styles = product.mapped_images.filter(style => style.source === 'MarkableAI' && style.checked).limit(7);
+    styles = product.mapped_images.filter(style => style.source === 'MarkableAI' && style.checked).slice(0,7);
   } else if(process.env.mode === 'dev'){
     styles = product.mapped_images.filter(style => style.source === 'MarkableAI')
   } else {
