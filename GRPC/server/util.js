@@ -188,13 +188,15 @@ function getStyleUrl(style){
 }
 function getShoppableItems(style){
   let crossSell = {};
-  style.shoppableItems.map(ss => {
-    let article_type = constants.categoryMap[ss.title];
-    if(!crossSell[article_type]){
-      crossSell[article_type] = [];
-    }
-    crossSell[article_type] = [...crossSell[article_type], ...ss.crossSellStyleIds]
-  })
+  if(style.shoppableItems){
+    style.shoppableItems.map(ss => {
+      let article_type = constants.categoryMap[ss.title];
+      if(!crossSell[article_type]){
+        crossSell[article_type] = [];
+      }
+      crossSell[article_type] = [...crossSell[article_type], ...ss.crossSellStyleIds]
+    })
+  }
   let shoppableItems = [];
   for(let key of Object.keys(crossSell)){
     shoppableItems.push({
