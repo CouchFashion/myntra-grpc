@@ -1,6 +1,7 @@
 const InitModule = require('./InitModule');
 const initObject = new InitModule();
 let MyntraProducts, StreetStyles, Users;
+const constants = require("../../constants");
 const batchSize  = 10000;
 let dbObject;
 initObject.getMongoDB()
@@ -185,6 +186,24 @@ function getStyleUrl(style){
     return style.globalUrl;
   }
 }
+function getShoppableItems(style){
+  let crossSell = {};
+  style.shoppableItems.map(ss => {
+    let article_type = constants.categoryMap[ss.title];
+    if(!crossSell[article_type]){
+      crossSell[article_type] = [];
+    }
+    crossSell[article_type] = [...crossSell[article_type], ...ss.crossSellStyleIds]
+  })
+  let shoppableItems = [];
+  for(let key of Object.keys(crossSell)){
+    shoppableItems.push({
+      title: key,
+      crossSellStyleIds: crossSell[key].sort(sortProducts).map(cs => cs.id)
+    })
+  }
+  return shoppableItems;
+}
 function sortProducts(p1,p2){
   if(p1.score < p2.score)
     return 1;
@@ -204,10 +223,11 @@ const getStreetStyleIdeas = async function(){
       id: style.id,
       imageUrl: getStyleUrl(style),
       credit: credit,
-      shoppableItems: style.shoppableItems ? style.shoppableItems.map(ss => {
-      	ss.crossSellStyleIds = ss.crossSellStyleIds.sort(sortProducts).map(cs => cs.id);
-	return ss;
-      }) : [],
+      // shoppableItems: style.shoppableItems ? style.shoppableItems.map(ss => {
+      // 	ss.crossSellStyleIds = ss.crossSellStyleIds.sort(sortProducts).map(cs => cs.id);
+	    //   return ss;
+      // }) : [],
+      shoppableItems: getShoppableItems(style),
       myntraImageUrl: "",
       isImageUpdated: style.isUpdated
     }
