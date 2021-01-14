@@ -225,11 +225,11 @@ const getStreetStyleIdeas = async function(){
       id: style.id,
       imageUrl: getStyleUrl(style),
       credit: credit,
-      // shoppableItems: style.shoppableItems ? style.shoppableItems.map(ss => {
-      // 	ss.crossSellStyleIds = ss.crossSellStyleIds.sort(sortProducts).map(cs => cs.id);
-	    //   return ss;
-      // }) : [],
-      shoppableItems: getShoppableItems(style),
+      shoppableItems: style.shoppableItems ? style.shoppableItems.map(ss => {
+      	ss.crossSellStyleIds = ss.crossSellStyleIds.sort(sortProducts).map(cs => cs.id);
+	      return ss;
+      }) : [],
+      // shoppableItems: getShoppableItems(style),
       myntraImageUrl: "",
       isImageUpdated: style.isUpdated
     }
