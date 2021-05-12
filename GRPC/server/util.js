@@ -2,6 +2,7 @@ const InitModule = require('./InitModule');
 const initObject = new InitModule();
 let MyntraProducts, StreetStyles, Users;
 const constants = require("../../constants");
+const fkData = require("../../data/fkData.json");
 const batchSize  = 10000;
 let dbObject;
 initObject.getMongoDB()
@@ -125,12 +126,18 @@ const updateReturnedStreetStyles = async function(styles){
   }
   return;
 }
-async function getProducts(){
+async function getProducts(user){
   let products;
   if(process.env.mode === 'test'){
-    products = await MyntraProducts.find({
-      readyForMyntra: true
-    }).toArray();
+    if(user === "fk-tech"){
+      products = await MyntraProducts.find({
+        readyForFlipkart: true
+      }).toArray();
+    } else{
+      products = await MyntraProducts.find({
+        readyForMyntra: true
+      }).toArray();
+    }
   } else if(process.env.mode === 'dev'){
     products = await MyntraProducts.find({
       readyForMyntra: true
@@ -156,8 +163,8 @@ function getStyles(product){
   }
   return styles.map(style => style.name);
 }
-const getStyleIdeas = async function(){
-  let products = await getProducts();
+const getStyleIdeas = async function(user){
+  let products = await getProducts(user);
   console.log("products", products.length)
   let stylingIdeas = products.map(product => {
     let styles = getStyles(product);
@@ -201,7 +208,8 @@ function getShoppableItems(style){
   for(let key of Object.keys(crossSell)){
     shoppableItems.push({
       title: key,
-      crossSellStyleIds: crossSell[key].sort(sortProducts).map(cs => cs.id)
+      crossSellStyleIds: crossSell[key].sort(sortProducts).map(cs => cs.id),
+      attributes: []
     })
   }
   return shoppableItems;
@@ -214,10 +222,18 @@ function sortProducts(p1,p2){
   else
     return 0;
 }
-const getStreetStyleIdeas = async function(){
-  let styles = await StreetStyles.find({
-    readyForMyntra: true
-  }).toArray();
+const getStreetStyleIdeas = async function(user){
+  let styles;
+  if(user === "fk-tech"){
+    styles = await StreetStyles.find({
+      readyForFlipkart: true
+    }).toArray();
+  } else {
+    styles = await StreetStyles.find({
+      readyForMyntra: true
+    }).toArray();
+  }
+  
   console.log("Styles ", styles.length)
   let streetStyles = styles.map(style => {
     let credit = style.credit ? style.credit : "";
@@ -225,11 +241,11 @@ const getStreetStyleIdeas = async function(){
       id: style.id,
       imageUrl: getStyleUrl(style),
       credit: credit,
-      shoppableItems: style.shoppableItems ? style.shoppableItems.map(ss => {
-      	ss.crossSellStyleIds = ss.crossSellStyleIds.sort(sortProducts).map(cs => cs.id);
-	      return ss;
-      }) : [],
-      // shoppableItems: getShoppableItems(style),
+      // shoppableItems: style.shoppableItems ? style.shoppableItems.map(ss => {
+      // 	ss.crossSellStyleIds = ss.crossSellStyleIds.sort(sortProducts).map(cs => cs.id);
+	    //   return ss;
+      // }) : [],
+      shoppableItems: getShoppableItems(style),
       myntraImageUrl: "",
       isImageUpdated: style.isUpdated
     }

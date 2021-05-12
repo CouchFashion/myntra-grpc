@@ -1,4 +1,4 @@
-const PROTO_PATH = __dirname + '/../../protos/alamodeStream.proto';
+const PROTO_PATH = __dirname + '/../../protos/CfStream.proto';
 const grpc = require('grpc');
 const protoLoader = require('@grpc/proto-loader');
 const batchSize = 100;
@@ -232,9 +232,9 @@ function main() {
     ackStreetStyles: AckStreetStyles
   });
   server.bind(
-    '0.0.0.0:50051', 
-    // grpc.ServerCredentials.createInsecure()
-    grpc.ServerCredentials.createSsl(rootCert,keyCertPairs, checkClientCertificate)
+    '0.0.0.0:50052', 
+    grpc.ServerCredentials.createInsecure()
+    // grpc.ServerCredentials.createSsl(rootCert,keyCertPairs, checkClientCertificate)
     );
     server.start();
   }
