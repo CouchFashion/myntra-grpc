@@ -2,7 +2,6 @@ const InitModule = require('./InitModule');
 const initObject = new InitModule();
 let MyntraProducts, StreetStyles, Users;
 const constants = require("../../constants");
-const fkData = require("../../data/fkData.json");
 const batchSize  = 10000;
 let dbObject;
 initObject.getMongoDB()
