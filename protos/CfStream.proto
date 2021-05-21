@@ -24,11 +24,11 @@ message StreetStyleObject {
     repeated ShoppableItem shoppableItems = 4;
     string myntraImageUrl = 5;
     bool isImageUpdated = 6;
+    repeated TextAttribute attributes = 7;
 }
 message ShoppableItem {
     string title = 1;
     repeated string crossSellStyleIds = 2; // ordered list lower rank comes first
-    repeated TextAttribute attributes = 3;
 }
 message TextAttribute {
     string name = 1;
