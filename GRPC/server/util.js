@@ -15,8 +15,8 @@ initObject.getMongoDB()
       MyntraProducts = dbObject.collection("top_sell_myntra_products");
       StreetStyles = dbObject.collection("StreetStyles");
     } else {
-      MyntraProducts = dbObject.collection("top_sell_myntra_products");
-      StreetStyles = dbObject.collection("StreetStyles");
+      MyntraProducts = dbObject.collection("top_sell_flipkart_products");
+      StreetStyles = dbObject.collection("flipkart_SS");
     }
     Users = dbObject.collection("grpcusers");
   })
@@ -158,7 +158,7 @@ function getStyles(product){
   } else if(process.env.mode === 'dev'){
     styles = product.mapped_images.filter(style => style.source === 'MarkableAI')
   } else {
-    styles = product.mapped_images.filter(style => style.checked && style.source === 'MarkableAI');
+    styles = product.mapped_images.filter(style => style.checked);
   }
   return styles.map(style => style.name);
 }

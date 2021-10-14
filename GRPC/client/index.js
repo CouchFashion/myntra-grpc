@@ -17,13 +17,10 @@ const hello_proto = grpc.loadPackageDefinition(
   ).proto;
 const rootCert = fs.readFileSync(path.join(__dirname, "../server/server-certs", "ca.crt"));
 const client = new hello_proto.alamodeStream(
-  //'localhost:50052',
-  //grpc.credentials.createInsecure()
-  //'gprc.couchfashion.com',
- // grpc.credentials.createInsecure()
-  //'grpc.couchfashion.com:50051',
-  'grpcflipkart.couchfashion.com',
-  grpc.credentials.createSsl(rootCert)
+  '40.65.143.88:50053',
+  grpc.credentials.createInsecure()
+ /*  'grpcflipkart.couchfashion.com',
+  grpc.credentials.createSsl(rootCert) */
 );
 // client.send(null, meta, null);
 const Login = async function(id, pass){
