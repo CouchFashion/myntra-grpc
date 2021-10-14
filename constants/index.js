@@ -40,7 +40,11 @@ const categoryMap = {
   "Messenger Bag": SuperCategory.BAGS,
   "Coats": SuperCategory.OUTERWEAR,
   "Clutches": SuperCategory.BAGS,
-  "Waistcoat": SuperCategory.OUTERWEAR
+  "Waistcoat": SuperCategory.OUTERWEAR,
+  "Footwear": SuperCategory.FOOTWEAR,
+  "Jeans and jaggings": SuperCategory.BOTTOMWEAR,
+  "Bags": SuperCategory.BAGS,
+  "Sunglasses": SuperCategory.ACCESSORIES
 }
 
 //check existing categories in shoppable items with this code 

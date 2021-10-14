@@ -17,7 +17,7 @@ const hello_proto = grpc.loadPackageDefinition(
   ).proto;
 const rootCert = fs.readFileSync(path.join(__dirname, "../server/server-certs", "ca.crt"));
 const client = new hello_proto.alamodeStream(
-  '40.65.143.88:50053',
+  '127.0.0.1:50053',
   grpc.credentials.createInsecure()
  /*  'grpcflipkart.couchfashion.com',
   grpc.credentials.createSsl(rootCert) */

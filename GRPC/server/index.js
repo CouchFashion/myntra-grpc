@@ -234,9 +234,10 @@ function main() {
     ackStreetStyles: AckStreetStyles
   });
   server.bind(
-    '127.0.0.1:50053', 
-    //grpc.ServerCredentials.createInsecure()
-    grpc.ServerCredentials.createSsl(rootCert,keyCertPairs, checkClientCertificate)
+    /* '127.0.0.1:50053', 
+     grpc.ServerCredentials.createInsecure() */
+     '0.0.0.0:50053',
+     grpc.ServerCredentials.createSsl(rootCert,keyCertPairs, checkClientCertificate)
     );
     server.start();
   }

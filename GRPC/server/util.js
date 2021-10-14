@@ -8,16 +8,16 @@ initObject.getMongoDB()
   .then(dbo => {
     dbObject = dbo;
     console.log('Mode',process.env.mode)
-    if(process.env.mode === "dev"){
+   /*  if(process.env.mode === "dev"){
       MyntraProducts = dbObject.collection("myntra_products_demo");
       StreetStyles = dbObject.collection("streetStyles_demo");
     } else if(process.env.mode === "test"){
       MyntraProducts = dbObject.collection("top_sell_myntra_products");
       StreetStyles = dbObject.collection("StreetStyles");
-    } else {
+    } else { */
       MyntraProducts = dbObject.collection("top_sell_flipkart_products");
       StreetStyles = dbObject.collection("flipkart_SS");
-    }
+    //}
     Users = dbObject.collection("grpcusers");
   })
   .catch(e => {
@@ -40,29 +40,29 @@ const ackProducts = async function(ids){
   //mark recieved products
   for(let i=0;i<recievedProducts.length;i+=batchSize){
     let batch = recievedProducts.slice(i,i+batchSize)
-   /*  await MyntraProducts.updateMany({
+    await MyntraProducts.updateMany({
       product_id: {$in: batch.map(p => p.product_id)}
     },{
       $set:{
         awaitACK: false,
-        readyForMyntra: false,
-        assignedToMyntra: true,
+        readyForFlipkart: false,
+        assignedToFlipkart: true,
         updated: false
       }
-    }) */
+    })
   }
   //mark failed products for next batch
   for(let i=0;i<failedProducts.length;i+=batchSize){
     let batch = failedProducts.slice(i,i+batchSize)
-   /*  await MyntraProducts.updateMany({
+    await MyntraProducts.updateMany({
       product_id: {$in: batch.map(p => p.product_id)}
     },{
       $set:{
-        readyForMyntra: true,
+        readyForFlipkart: true,
         awaitACK: false,
-        assignedToMyntra: false
+        assignedToFlipkart: false
       }
-    }) */
+    })
   }
 }
 const ackStyles = async function(ids){
@@ -74,29 +74,29 @@ const ackStyles = async function(ids){
   //mark recieved Styles
   for(let i=0;i<recievedStyles.length;i+=batchSize){
     let batch = recievedStyles.slice(i,i+batchSize);
-   /*  await StreetStyles.updateMany({
+    await StreetStyles.updateMany({
       id: {$in: batch.map(s => s.id)}
     },{
       $set:{
         awaitACK: false,
-        readyForMyntra: false,
-        assignedToMyntra: true,
+        readyforflipkart: false,
+        assignedToFlipkart: true,
         isUpdated: false
       }
-    }) */
+    })
   }
   //mark failed Styles for next batch
   for(let i=0;i<failedStyles.length;i+=batchSize){
     let batch = failedStyles.slice(i,i+batchSize);
-    /* await StreetStyles.updateMany({
+    await StreetStyles.updateMany({
       id: {$in: batch.map(s => s.id)}
     },{
       $set:{
-        readyForMyntra: true,
+        readyforflipkart: true,
         awaitACK: false,
-        assignedToMyntra: false
+        assignedToFlipkart: false
       }
-    }) */
+    })
   }
 }
 const updateReturnedProducts = async function(products){
@@ -127,7 +127,7 @@ const updateReturnedStreetStyles = async function(styles){
 }
 async function getProducts(user){
   let products;
-  if(process.env.mode === 'test'){
+/*   if(process.env.mode === 'test'){
     if(user === "fk-tech"){
       products = await MyntraProducts.find({
         readyForFlipkart: true
@@ -141,25 +141,25 @@ async function getProducts(user){
     products = await MyntraProducts.find({
       readyForMyntra: true
     }).toArray();
-  } else {
+  } else { */
     products = await MyntraProducts.find({
       readyForFlipkart: true,
       reviewed: true
     }).toArray();
-  }
+  //}
   return products;
 }
 function getStyles(product){
   let styles = [];
   //TO DISABLE THE RECOMMENDATIONS OF A LOT OF PRODUCTS THAT ARE MARKED AS READY FOR MYNTRA
   // return styles;
-  if(process.env.mode === 'test'){
+/*   if(process.env.mode === 'test'){
     styles = product.mapped_images.filter(style => style.source === 'MarkableAI' && style.checked).slice(0,7);
   } else if(process.env.mode === 'dev'){
     styles = product.mapped_images.filter(style => style.source === 'MarkableAI')
-  } else {
+  } else { */
     styles = product.mapped_images.filter(style => style.checked);
-  }
+ // }
   return styles.map(style => style.name);
 }
 const getStyleIdeas = async function(user){
@@ -195,12 +195,13 @@ function getStyleUrl(style){
 function getShoppableItems(style){
   let crossSell = {};
   if(style.shoppableItems){
+    console.log('LENGTH:',style.shoppableItems.length)
     style.shoppableItems.map(ss => {
-      let article_type = constants.categoryMap[ss.title];
+      let article_type = constants.categoryMap[ss.title] || ss.title;
       if(!crossSell[article_type]){
         crossSell[article_type] = [];
       }
-      crossSell[article_type] = [...crossSell[article_type], ...ss.crossSellStyleIds]
+      crossSell[article_type] = [...crossSell[article_type], ...ss.crossSellStyleIds||[]]
     })
   }
   let shoppableItems = [];
@@ -216,10 +217,16 @@ function getShoppableItems(style){
   return shoppableItems;
 }
 //get attributes
-function getAttrinutes(style){
+function getAttributes(style){
   let attri = [];
-  if(style.Attributes){
-    attri = styles.Attributes;
+  if(style.attributes){
+    for(let i=0;i<style.attributes.length;i++){
+      let item=style.attributes[i]
+      attri.push({  
+        title: item.title,
+        textAttributes: item.textAttributes
+      })
+    }
   }
   return attri;
 }
@@ -233,15 +240,15 @@ function sortProducts(p1,p2){
 }
 const getStreetStyleIdeas = async function(user){
   let styles;
-  if(user === "fk-tech"){
+ /*  if(user === "fk-tech"){
     styles = await StreetStyles.find({
       readyForFlipkart: true
     }).toArray();
-  } else {
+  } else { */
     styles = await StreetStyles.find({
-      readyForMyntra: true
+      readyforflipkart: true
     }).toArray();
-  }
+  //}
   
   console.log("Styles ", styles.length)
   let streetStyles = styles.map(style => {
@@ -256,7 +263,7 @@ const getStreetStyleIdeas = async function(user){
       // }) : [],
       shoppableItems: getShoppableItems(style),
       //myntraImageUrl: "",
-      attributes: [],//getAttrinutes(style),
+      attributes: getAttributes(style),
       isImageUpdated: style.isUpdated
     }
   })
