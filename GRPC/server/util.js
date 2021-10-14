@@ -38,7 +38,7 @@ const ackProducts = async function(ids){
   let failedProducts = products.filter(product => ids.indexOf(product.product_id) < 0);
   console.log(`Failed recieval of ${failedProducts.length} Style Ideas`);
   //mark recieved products
-  for(let i=0;i<recievedProducts.length;i+=batchSize){
+ /*  for(let i=0;i<recievedProducts.length;i+=batchSize){
     let batch = recievedProducts.slice(i,i+batchSize)
     await MyntraProducts.updateMany({
       product_id: {$in: batch.map(p => p.product_id)}
@@ -50,9 +50,9 @@ const ackProducts = async function(ids){
         updated: false
       }
     })
-  }
+  } */
   //mark failed products for next batch
-  for(let i=0;i<failedProducts.length;i+=batchSize){
+  /* for(let i=0;i<failedProducts.length;i+=batchSize){
     let batch = failedProducts.slice(i,i+batchSize)
     await MyntraProducts.updateMany({
       product_id: {$in: batch.map(p => p.product_id)}
@@ -63,7 +63,7 @@ const ackProducts = async function(ids){
         assignedToFlipkart: false
       }
     })
-  }
+  } */
 }
 const ackStyles = async function(ids){
   console.log(`Acknowledging Recieval of ${ids.length} Street Styles`);
@@ -72,7 +72,7 @@ const ackStyles = async function(ids){
   let failedStyles = styles.filter(style => ids.indexOf(style.id) < 0);
   console.log(`Failed recieval of ${failedStyles.length} Street Styles`);
   //mark recieved Styles
-  for(let i=0;i<recievedStyles.length;i+=batchSize){
+ /*  for(let i=0;i<recievedStyles.length;i+=batchSize){
     let batch = recievedStyles.slice(i,i+batchSize);
     await StreetStyles.updateMany({
       id: {$in: batch.map(s => s.id)}
@@ -84,9 +84,9 @@ const ackStyles = async function(ids){
         isUpdated: false
       }
     })
-  }
+  } */
   //mark failed Styles for next batch
-  for(let i=0;i<failedStyles.length;i+=batchSize){
+  /* for(let i=0;i<failedStyles.length;i+=batchSize){
     let batch = failedStyles.slice(i,i+batchSize);
     await StreetStyles.updateMany({
       id: {$in: batch.map(s => s.id)}
@@ -97,7 +97,7 @@ const ackStyles = async function(ids){
         assignedToFlipkart: false
       }
     })
-  }
+  } */
 }
 const updateReturnedProducts = async function(products){
   for(let i=0;i<products.length;i+=batchSize){
