@@ -211,7 +211,7 @@ function getShoppableItems(style){
       //attributes: []
     })
   }
-  shoppableItems = shoppableItems.slice(0,5);
+  //shoppableItems = shoppableItems.slice(0,5);
 
   return shoppableItems;
 }
