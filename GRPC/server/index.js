@@ -1,4 +1,5 @@
-const PROTO_PATH = __dirname + '/../../protos/CfStream.proto';
+//const PROTO_PATH = __dirname + '/../../protos/CfStream.proto';
+const PROTO_PATH = __dirname + '/../../protos/Flipstream.proto';
 const grpc = require('grpc');
 const protoLoader = require('@grpc/proto-loader');
 const batchSize = 100;
@@ -89,6 +90,7 @@ async function authenticateRequest(token){
 }
 async function GetStylingIdeas(call, callback) {
   try {
+    console.log('ENV:',process.env.mode)
     let token = call.request.jwtToken; //authorization Token
     let auth = await authenticateRequest(token);
     if(auth.authenticated){
@@ -221,7 +223,7 @@ function main() {
   const privateKey = fs.readFileSync(path.join(__dirname, "server-certs", "server.key"));
   const certChain = fs.readFileSync(path.join(__dirname, "server-certs", "server.crt"));
   const keyCertPairs = [{private_key:privateKey,cert_chain:certChain}];
-  const checkClientCertificate = false;
+  const checkClientCertificate = true;//false;
   
   const server = new grpc.Server();
   server.addService(hello_proto.alamodeStream.service, {
@@ -234,7 +236,7 @@ function main() {
   server.bind(
     '0.0.0.0:50052', 
     grpc.ServerCredentials.createInsecure()
-    // grpc.ServerCredentials.createSsl(rootCert,keyCertPairs, checkClientCertificate)
+    //grpc.ServerCredentials.createSsl(rootCert,keyCertPairs, checkClientCertificate)
     );
     server.start();
   }

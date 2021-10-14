@@ -1,4 +1,4 @@
-const PROTO_PATH = __dirname + '/../protos/alamodeStream.proto';
+const PROTO_PATH = __dirname + '/../protos/Cfstream.proto';
 const recommendations = require('../data/recommendations.json')
 const streetStyleObjects = require('../data/streetStyles.json')
 const grpc = require('grpc');

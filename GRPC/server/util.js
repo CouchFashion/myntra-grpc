@@ -40,7 +40,7 @@ const ackProducts = async function(ids){
   //mark recieved products
   for(let i=0;i<recievedProducts.length;i+=batchSize){
     let batch = recievedProducts.slice(i,i+batchSize)
-    await MyntraProducts.updateMany({
+   /*  await MyntraProducts.updateMany({
       product_id: {$in: batch.map(p => p.product_id)}
     },{
       $set:{
@@ -49,12 +49,12 @@ const ackProducts = async function(ids){
         assignedToMyntra: true,
         updated: false
       }
-    })
+    }) */
   }
   //mark failed products for next batch
   for(let i=0;i<failedProducts.length;i+=batchSize){
     let batch = failedProducts.slice(i,i+batchSize)
-    await MyntraProducts.updateMany({
+   /*  await MyntraProducts.updateMany({
       product_id: {$in: batch.map(p => p.product_id)}
     },{
       $set:{
@@ -62,7 +62,7 @@ const ackProducts = async function(ids){
         awaitACK: false,
         assignedToMyntra: false
       }
-    })
+    }) */
   }
 }
 const ackStyles = async function(ids){
@@ -74,7 +74,7 @@ const ackStyles = async function(ids){
   //mark recieved Styles
   for(let i=0;i<recievedStyles.length;i+=batchSize){
     let batch = recievedStyles.slice(i,i+batchSize);
-    await StreetStyles.updateMany({
+   /*  await StreetStyles.updateMany({
       id: {$in: batch.map(s => s.id)}
     },{
       $set:{
@@ -83,12 +83,12 @@ const ackStyles = async function(ids){
         assignedToMyntra: true,
         isUpdated: false
       }
-    })
+    }) */
   }
   //mark failed Styles for next batch
   for(let i=0;i<failedStyles.length;i+=batchSize){
     let batch = failedStyles.slice(i,i+batchSize);
-    await StreetStyles.updateMany({
+    /* await StreetStyles.updateMany({
       id: {$in: batch.map(s => s.id)}
     },{
       $set:{
@@ -96,7 +96,7 @@ const ackStyles = async function(ids){
         awaitACK: false,
         assignedToMyntra: false
       }
-    })
+    }) */
   }
 }
 const updateReturnedProducts = async function(products){
@@ -143,7 +143,7 @@ async function getProducts(user){
     }).toArray();
   } else {
     products = await MyntraProducts.find({
-      readyForMyntra: true,
+      readyForFlipkart: true,
       reviewed: true
     }).toArray();
   }
@@ -189,7 +189,7 @@ function getStyleUrl(style){
   } else if(process.env.mode === 'dev'){
     return style.url;
   } else {
-    return style.globalUrl;
+    return style.url;
   }
 }
 function getShoppableItems(style){
@@ -208,10 +208,20 @@ function getShoppableItems(style){
     shoppableItems.push({
       title: key,
       crossSellStyleIds: crossSell[key].sort(sortProducts).map(cs => cs.id),
-      attributes: []
+      //attributes: []
     })
   }
+  shoppableItems = shoppableItems.slice(0,5);
+
   return shoppableItems;
+}
+//get attributes
+function getAttrinutes(style){
+  let attri = [];
+  if(style.Attributes){
+    attri = styles.Attributes;
+  }
+  return attri;
 }
 function sortProducts(p1,p2){
   if(p1.score < p2.score)
@@ -245,7 +255,8 @@ const getStreetStyleIdeas = async function(user){
 	    //   return ss;
       // }) : [],
       shoppableItems: getShoppableItems(style),
-      myntraImageUrl: "",
+      //myntraImageUrl: "",
+      attributes: [],//getAttrinutes(style),
       isImageUpdated: style.isUpdated
     }
   })

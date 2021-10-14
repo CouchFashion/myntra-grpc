@@ -1,0 +1,94 @@
+syntax = "proto3";
+package proto;
+
+message StylingIdea {
+    int32 statusCode = 1;
+    string statusDetail = 2;
+    repeated StyleIdeaInfo stylingIdeas = 3;
+    int32 stylingIdeasCount = 4;    //no of styling ideas to expect
+}
+message StyleIdeaInfo {
+    string styleId = 1;
+    repeated string streetStylingObjectId = 2; // ordered list lower rank will come first
+}
+message StreetStyles {
+    int32 statusCode = 1;
+    string statusDetail = 2;
+    repeated StreetStyleObject streetStyles = 3;
+    int32 streetStylesCount = 4;    //no of street styles to expect
+}
+message StreetStyleObject {
+    string id = 1;
+    string imageUrl = 2;
+    string credit = 3;
+    repeated ShoppableItem shoppableItems = 4;
+    repeated Attribute attributes = 5;
+    bool isImageUpdated = 6;
+}
+message Attribute{
+    string title = 1;
+    repeated TextAttribute textAttributes=2;
+}
+message ShoppableItem {
+    string title = 1;
+    repeated string crossSellStyleIds = 2; // ordered list lower rank comes first
+}
+message TextAttribute {
+    string name = 1;
+    repeated string value = 2;
+}
+message LoginRequest {
+    string username = 1;
+    string password = 2;
+}
+message LoginResponse {
+    string jwtToken = 1;
+    int32 statusCode = 2;
+    string statusDetail = 3;
+}
+message StylingIdeaRequest{
+    string jwtToken = 1;
+}
+message StreetStyleRequest{
+    string jwtToken = 1;
+}
+
+message AckStylingIdeasRequest{
+    string jwtToken = 1;
+    repeated string styleIds = 2;
+}
+
+message AckStreetStylesRequest{
+    string jwtToken = 1;
+    repeated string streetStyleObjectId = 2;
+}
+
+message SimpleResponse{
+    int32 statusCode = 1;
+    string statusDetail = 2;
+}
+
+
+service alamodeStream {
+    rpc Login (LoginRequest) returns (LoginResponse){
+    }
+    rpc GetStylingIdeas (StylingIdeaRequest) returns (stream StylingIdea) {
+    }
+    rpc GetStreetStylingIdeas (StreetStyleRequest) returns (stream StreetStyles) {
+    }
+    rpc AckStylingIdeas (AckStylingIdeasRequest) returns (SimpleResponse){
+    }
+    rpc AckStreetStyles (AckStreetStylesRequest) returns (SimpleResponse){
+    }
+}
+
+
+/*
+* Here is the command to generate the protobuf
+* protoc --go_out=plugins=grpc:. alamodeStream.proto
+* protoc --gofast_out=plugins=grpc:. alamodeStream.proto
+* protoc --gogoopsee_out=plugins=grpc+graphql,Mgoogle/protobuf/descriptor.proto=github.com/gogo/protobuf/protoc-gen-gogo/descriptor:. --proto_path=/gopath/src:. *alamodeStream.proto
+* The generated protobuf should be checked-in to
+* all growth, gateway, and layout-engine Repos.
+* to generate python grpc client $ python -m grpc_tools.protoc -I./protos --python_out=. --grpc_python_out=. ./protos/alamodeStream.proto
+*/

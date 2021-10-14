@@ -1,4 +1,4 @@
-const PROTO_PATH = __dirname + '/../../protos/alamodeStream.proto';
+const PROTO_PATH = __dirname + '/../../protos/Flipstream.proto';
 const {GRPC_SOURCE} = require("../../constants");
 const grpc = require('grpc');
 const protoLoader = require('@grpc/proto-loader');
@@ -17,10 +17,12 @@ const hello_proto = grpc.loadPackageDefinition(
   ).proto;
 const rootCert = fs.readFileSync(path.join(__dirname, "../server/server-certs", "ca.crt"));
 const client = new hello_proto.alamodeStream(
-  // '0.0.0.0:50051',
-  // grpc.credentials.createInsecure()
-  'grpc.couchfashion.com:50051',
-  grpc.credentials.createSsl(rootCert)
+  'localhost:50052',
+  grpc.credentials.createInsecure()
+  //'gprc.couchfashion.com',
+ // grpc.credentials.createInsecure()
+  //'grpc.couchfashion.com:50051',
+  //grpc.credentials.createSsl(rootCert)
 );
 // client.send(null, meta, null);
 const Login = async function(id, pass){
@@ -87,6 +89,9 @@ const GetStylingIdeas = async function(token){
     })
     call.on('end',function(){
       resolve(a)
+    })
+    call.on('error',function(err){
+      console.log(err.message)
     })
   })
 }
