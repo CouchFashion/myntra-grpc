@@ -219,9 +219,9 @@ async function AckStreetStyles(call, callback){
 }
 function main() {
   //ssl on
-  const rootCert = fs.readFileSync(path.join(__dirname, "server-certs", "ca.crt"));
-  const privateKey = fs.readFileSync(path.join(__dirname, "server-certs", "server.key"));
-  const certChain = fs.readFileSync(path.join(__dirname, "server-certs", "server.crt"));
+  const rootCert = fs.readFileSync(path.join(__dirname, "server-certs", "cat_flip.crt"));
+  const privateKey = fs.readFileSync(path.join(__dirname, "server-certs", "server_flip.key"));
+  const certChain = fs.readFileSync(path.join(__dirname, "server-certs", "server_flip.crt"));
   const keyCertPairs = [{private_key:privateKey,cert_chain:certChain}];
   const checkClientCertificate = true;//false;
   

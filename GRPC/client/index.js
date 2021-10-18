@@ -15,12 +15,12 @@ const packageDefinition = protoLoader.loadSync(PROTO_PATH,
 const hello_proto = grpc.loadPackageDefinition(
     packageDefinition
   ).proto;
-const rootCert = fs.readFileSync(path.join(__dirname, "../server/server-certs", "ca.crt"));
+const rootCert = fs.readFileSync(path.join(__dirname, "../server/server-certs", "cat_flip.crt"));
 const client = new hello_proto.alamodeStream(
-  '127.0.0.1:50053',
-  grpc.credentials.createInsecure()
- /*  'grpcflipkart.couchfashion.com',
-  grpc.credentials.createSsl(rootCert) */
+/*   '127.0.0.1:50053',
+  grpc.credentials.createInsecure() */
+  'grpcflipkart.couchfashion.com',
+  grpc.credentials.createSsl(rootCert)
 );
 // client.send(null, meta, null);
 const Login = async function(id, pass){
