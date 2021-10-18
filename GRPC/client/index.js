@@ -15,7 +15,7 @@ const packageDefinition = protoLoader.loadSync(PROTO_PATH,
 const hello_proto = grpc.loadPackageDefinition(
     packageDefinition
   ).proto;
-const rootCert = fs.readFileSync(path.join(__dirname, "../server/server-certs", "cat_flip.crt"));
+const rootCert = fs.readFileSync(path.join(__dirname, "../server/server-certs/cat_flip.crt"))//"../server/server-certs", "cat_flip.crt"));
 const client = new hello_proto.alamodeStream(
 /*   '127.0.0.1:50053',
   grpc.credentials.createInsecure() */
