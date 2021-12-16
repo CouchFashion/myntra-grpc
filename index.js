@@ -50,12 +50,12 @@ const {GRPC_SOURCE} = require("./constants/index.js");
   setTimeout(async () => {
     let res1 = await GetStylingIdeas(res.jwtToken);
     //console.log('STYLE:',JSON.stringify(res1))
-    fs.writeFileSync('styleideas.json',JSON.stringify(res1))
+    fs.writeFileSync(`styleideas${new Date().getTime()}.json`,JSON.stringify(res1))
     let res2 = await AckStyleIdeas(res.jwtToken, res1[0] ? res1[0].stylingIdeas.map(item => item.styleId) : []);
     console.log(res2)
     let res3 = await GetStreetStylingIdeas(res.jwtToken);
     //console.log('SHOPPABLE:',JSON.stringify(res3))
-    fs.writeFileSync('streetstyleideas.json',JSON.stringify(res3))
+    fs.writeFileSync(`streetstyleideas${new Date().getTime()}.json`,JSON.stringify(res3))
     let res4 = await AckStreetStyles(res.jwtToken, res3[0] ? res3[0].streetStyles.map(item => item.id) : []);
     console.log(res4)
     console.log('................DONE..........................')
